@@ -138,76 +138,6 @@ namespace RtfDomParser
 			}
 		}
 
-		internal void MergeText()
-		{
-			RTFNodeList list = new RTFNodeList();
-			System.Text.StringBuilder myStr = new System.Text.StringBuilder();
-			ByteBuffer buffer = new ByteBuffer();
-			//System.IO.MemoryStream ms = new System.IO.MemoryStream();
-			//System.Text.Encoding encode = myOwnerDocument.Encoding ;
-			foreach( RTFNode node in myNodes )
-			{
-				if( node.Type == RTFNodeType.Text )
-				{
-					AddString( myStr , buffer );
-					myStr.Append( node.Keyword );
-					continue ;
-				}
-				if( node.Type == RTFNodeType.Control 
-					&& node.Keyword == "\'"
-					&& node.HasParameter )
-				{
-					buffer.Add( ( byte ) node.Parameter );
-					continue ;
-				}
-				else if( node.Type == RTFNodeType.Control || node.Type == RTFNodeType.Keyword )
-				{
-					if( node.Keyword == "tab" )
-					{
-						AddString( myStr , buffer );
-						myStr.Append( '\t' );
-						continue ;
-					}
-					if( node.Keyword == "emdash")
-					{
-						AddString( myStr , buffer );
-						// notice!! This code may cause compiler error in OS which not support chinese character.
-						// you can change to myStr.Append('-');
-						myStr.Append( 'j');
-						continue ;
-					}
-					if( node.Keyword == "" )
-					{
-						AddString( myStr , buffer );
-						// notice!! This code may cause compiler error in OS which not support chinese character.
-						// you can change to myStr.Append('-');
-						myStr.Append( 'Ƀ' );
-						continue ;
-					}
-				}
-				AddString( myStr , buffer );
-				if( myStr.Length > 0 )
-				{
-					list.Add( new RTFNode( RTFNodeType.Text , myStr.ToString()));
-					myStr = new System.Text.StringBuilder();
-				}
-				list.Add( node );
-			}//foreach( RTFNode node in myNodes )
-
-			AddString( myStr , buffer );
-			if( myStr.Length > 0 )
-			{
-				list.Add( new RTFNode( RTFNodeType.Text , myStr.ToString()));
-			}
-			myNodes.Clear();
-			foreach( RTFNode node in list )
-			{
-				node.Parent = this ;
-				node.OwnerDocument = myOwnerDocument ;
-				myNodes.Add( node );
-			}
-		}
- 
 		private void AddString( System.Text.StringBuilder myStr , ByteBuffer buffer )
 		{
 			if( buffer.Count > 0 )
@@ -218,7 +148,7 @@ namespace RtfDomParser
                 //}
                 //else
 				{
-                    string txt = buffer.GetString(myOwnerDocument.RuntimeEncoding);
+                    string txt = buffer.GetString(System.Text.Encoding.Default);
 					myStr.Append( txt );
 				}
 				buffer.Reset();
@@ -281,7 +211,6 @@ namespace RtfDomParser
 			if( node == this )
 				throw new System.ArgumentException("node != this");
 			node.Parent = this ;
-			node.OwnerDocument = myOwnerDocument ;
 			this.Nodes.Add( node );
 		}
 		/// <summary>
@@ -310,7 +239,6 @@ namespace RtfDomParser
 			if( node == this )
 				throw new System.ArgumentException("node != this");
 			node.Parent = this ;
-			node.OwnerDocument = myOwnerDocument ;
 			this.Nodes.Insert( index , node );
 		}
 

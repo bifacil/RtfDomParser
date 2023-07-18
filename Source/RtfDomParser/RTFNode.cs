@@ -60,26 +60,7 @@ namespace RtfDomParser
 			set{ myParent = value;}
 		}
 
-		protected RTFRawDocument myOwnerDocument = null ;
-		/// <summary>
-		/// raw document which owner this node
-		/// </summary>
-		public virtual RTFRawDocument OwnerDocument
-		{
-			get{ return myOwnerDocument ;}
-			set
-			{
-				myOwnerDocument = value;
-				if( this.Nodes != null )
-				{
-					foreach( RTFNode node in this.Nodes )
-					{
-						node.OwnerDocument = value ;
-					}
-				}
-			}
-		}
-
+	
 		/// <summary>
 		/// key word
 		/// </summary>

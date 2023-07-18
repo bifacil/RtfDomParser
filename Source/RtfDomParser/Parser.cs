@@ -65,52 +65,53 @@ namespace RtfDomParser
             }
             if (token.Type == RTFTokenType.Text)
             {
-                if (reader != null)
-                {
-                    if ( token.Key[0] == '?' )
-                    {
-                        if (reader.LastToken != null)
-                        {
-                            if (reader.LastToken.Type == RTFTokenType.Keyword 
-                                && reader.LastToken.Key == "u"
-                                && reader.LastToken.HasParam)
-                            {
-                                // 紧跟在在“\uN”后面的问号忽略掉
-                                if (token.Key.Length > 0)
-                                {
-                                    CheckBuffer();
-                                    //myStr.Append(token.Key.Substring(1));
-                                }
-                                return true;
-                            }
-                        }
-                    }
-                    //else if (token.Key == "\"")
-                    //{
-                    //    // 双引号开头,一直读取内容到双引号结束
-                    //    CheckBuffer();
-                    //    while (true)
-                    //    {
-                    //        int v = reader.InnerReader.Read();
-                    //        if (v > 0)
-                    //        {
-                    //            if (v == (int)'"')
-                    //            {
-                    //                break;
-                    //            }
-                    //            else
-                    //            {
-                    //                myStr.Append((char)v);
-                    //            }
-                    //        }
-                    //        else
-                    //        {
-                    //            break;
-                    //        }
-                    //    }//while
-                    //    return true;
-                    //}
-                }
+                //if (reader != null)
+                //{
+                //    if ( token.Key[0] == '?' )
+                //    {
+                //        if (reader.LastToken != null)
+                //        {
+                //            if (reader.LastToken.Type == RTFTokenType.Keyword 
+                //                && reader.LastToken.Key == "u"
+                //                && reader.LastToken.HasParam)
+                //            {
+                //                // 紧跟在在“\uN”后面的问号忽略掉
+                //                if (token.Key.Length > 0)
+                //                {
+                //                    CheckBuffer();
+                //                    //He descomentado la siguiente línea que estaba comentada....
+                //                    myStr.Append(token.Key.Substring(1));
+                //                }
+                //                return true;
+                //            }
+                //        }
+                //    }
+                //    //else if (token.Key == "\"")
+                //    //{
+                //    //    // 双引号开头,一直读取内容到双引号结束
+                //    //    CheckBuffer();
+                //    //    while (true)
+                //    //    {
+                //    //        int v = reader.InnerReader.Read();
+                //    //        if (v > 0)
+                //    //        {
+                //    //            if (v == (int)'"')
+                //    //            {
+                //    //                break;
+                //    //            }
+                //    //            else
+                //    //            {
+                //    //                myStr.Append((char)v);
+                //    //            }
+                //    //        }
+                //    //        else
+                //    //        {
+                //    //            break;
+                //    //        }
+                //    //    }//while
+                //    //    return true;
+                //    //}
+                //}
                 CheckBuffer();
                 myStr.Append(token.Key);
                 return true ;
@@ -805,7 +806,19 @@ namespace RtfDomParser
 				if( Negative )
 					p = - p ;
 				token.Param = p ;
-			}//if( char.IsDigit( ( char ) c ) || c == '-' )
+
+                // Después de un UNICODe, el siguiente caracter debe ignorarse...
+                if (token.Key == RTFConsts._u)
+                {
+                    var ignore = myReader.Read(); //Leemos e ignoramos el caracter ?
+                    if (ignore == '\\'){
+                        //si hay otro carácter escapado tendrá el fomrato \'hh (se ignoran los tres caracteres)
+                        ignore = myReader.Read(); // Es '
+                        ignore = myReader.Read(); // Es el primer dígito HEX
+                        ignore = myReader.Read(); // Es el segundo dígito HEX
+                    }
+                }
+            }//if( char.IsDigit( ( char ) c ) || c == '-' )
 
 			if( c == ' ' )
 			{

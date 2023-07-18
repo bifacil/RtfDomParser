@@ -488,6 +488,32 @@ namespace RtfDomParser
             }
         }
 
+        private int _StylesheetIndex;
+        public int StylesheetIndex
+        {
+            get
+            {
+                return _StylesheetIndex;
+            }
+            set
+            {
+                _StylesheetIndex = value;
+            }
+        }
+
+        private int _CStylesheetIndex;
+        public int CStylesheetIndex
+        {
+            get
+            {
+                return _CStylesheetIndex;
+            }
+            set
+            {
+                _CStylesheetIndex = value;
+            }
+        }
+
         private bool bolStrikeout = false;
         /// <summary>
         /// strickout style
@@ -688,6 +714,10 @@ namespace RtfDomParser
                 return true;
             if (format == null)
                 return false;
+            if (this.StylesheetIndex != format.StylesheetIndex)
+                return false;
+            if (this.CStylesheetIndex != format.CStylesheetIndex)
+                return false;
             if (this.Align != format.Align)
                 return false;
             if (this.BackColor != format.BackColor)
@@ -843,11 +873,9 @@ namespace RtfDomParser
             this.MultipleLineSpacing = false;
             this.SpacingBefore = 0;
             this.SpacingAfter = 0;
-            //this.LeftBorder = false;
-            //this.TopBorder = false;
-            //this.RightBorder = false;
-            //this.BottomBorder = false;
-            //this.BorderColor = System.Drawing.Color.Transparent;
+            this.StylesheetIndex = 0;
+            this.CStylesheetIndex = 0;
+            this.Bold = false;
         }
 
         public void Reset()
@@ -889,6 +917,8 @@ namespace RtfDomParser
             this.ReadText = true;
             this.NativeLevel = 0;
             this.Hidden = false;
+            this.StylesheetIndex = 0;
+            this.CStylesheetIndex = 0;
         }
 
     }

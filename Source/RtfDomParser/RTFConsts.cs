@@ -102,6 +102,9 @@ namespace RtfDomParser
         public const string _chcbpat = "chcbpat";
         public const string _i = "i";
         public const string _u = "u";
+        public const string _s = "s"; //Stylesheet
+        public const string _cs = "cs"; //Stylesheet
+
         public const string _v = "v";
         public const string _highlight = "highlight";
         public const string _ul = "ul";
